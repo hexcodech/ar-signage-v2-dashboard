@@ -6,6 +6,11 @@ const uuidModule = new (require('./uuid'))();
 module.exports = class MQTT {
     constructor() {
         this.mqttClient = null;
+        this.mqttMessageCallback;
+    }
+
+    setCallback(callback) {
+        this.mqttMessageCallback = callback;
     }
 
     connect() {
@@ -27,6 +32,7 @@ module.exports = class MQTT {
                     this.mqttClient.on('connect', () => {
                         resolve(data.ip);
                     });
+                    this.mqttClient.on('message', (topic, message) => this.mqttMessageCallback(topic, message));
                     this.mqttClient.on('error', (err) => {
                         reject(`mqtt error: ${err}`);
                     });

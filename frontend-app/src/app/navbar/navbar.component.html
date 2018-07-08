@@ -4,7 +4,7 @@
   <ul class="navbar-nav">
       <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
-              Room 1
+              {{selectedRoom}}
           </a>
           <div class="dropdown-menu">
               <a class="dropdown-item" href="#">Room 1</a>
@@ -16,7 +16,7 @@
 
   <div class="card ml-auto">
       <div class="card-body" style="width: 20rem;">
-          Timer Controls
+          {{timerMinuteString}}:{{timerSecondsString}} - <a (click)="timerPlay()" class="btn btn-outline-success">Play</a>
       </div>
   </div>
 </nav>
