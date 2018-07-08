@@ -8,10 +8,13 @@ import { RoomsService } from '../services/rooms.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  public selectedRoom: String;
+  public selectedRoom: string;
   public rooms: [string];
+  public timerSeconds: any = {};
   public timerMinuteString = '00';
   public timerSecondsString = '00';
+  public timerSetMinute = '0';
+  public timerSetSeconds = '0';
 
   constructor(
     private mqttService: MqttService,
@@ -27,25 +30,33 @@ export class NavbarComponent implements OnInit {
       this.rooms = rooms;
       if (rooms.length > 0) {
         this.selectedRoom = rooms[0];
+        this.makeTimeString();
       }
     });
   }
 
   private mqttMessageHandler(topic, message) {
     let messageObject;
+    let roomName;
     try {
       messageObject = JSON.parse(message.toString());
     } catch (err) {
       console.error(`mqttMessageHandler JSON parse error: ${err.toString()}`);
     }
 
-    switch (topic) {
-      case `ar-signage/${this.selectedRoom}/timer/seconds`:
-        this.timerSecondsString = ('0' + messageObject.value % 60).slice(-2);
-        this.timerMinuteString = ('0' + Math.floor(messageObject.value / 60)).slice(-2);
+    switch (true) {
+      case topic.match(/^ar-signage\/.+\/timer\/seconds$/g) && topic.match(/^ar-signage\/.+\/timer\/seconds$/g).length > 0:
+        roomName = topic.split(/[\/\/]/g)[1];
+        this.timerSeconds[roomName] = parseInt(messageObject.value, 10);
+        this.makeTimeString();
         this.changeRef.detectChanges();
         break;
     }
+  }
+
+  private makeTimeString() {
+    this.timerSecondsString = ('0' + this.timerSeconds[this.selectedRoom] % 60).slice(-2);
+    this.timerMinuteString = ('0' + Math.floor(this.timerSeconds[this.selectedRoom] / 60)).slice(-2);
   }
 
   public timerPlay() {
@@ -54,9 +65,21 @@ export class NavbarComponent implements OnInit {
     }));
   }
 
+  public timerPause() {
+    this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/timer/control`, JSON.stringify({
+      value: 'PAUSE'
+    }));
+  }
+
+  public timerReset() {
+    this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/timer/control`, JSON.stringify({
+      value: 'RESET'
+    }));
+  }
+
   public timerSet() {
     this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/timer/setseconds`, JSON.stringify({
-      value: 15
+      value: (parseInt(this.timerSetMinute, 10) * 60) + parseInt(this.timerSetSeconds, 10)
     }));
   }
 

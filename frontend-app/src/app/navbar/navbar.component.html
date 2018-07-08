@@ -15,8 +15,14 @@
   </ul>
 
   <div class="card ml-auto">
-      <div class="card-body" style="width: 20rem;">
-          {{timerMinuteString}}:{{timerSecondsString}} - <a (click)="timerPlay()" class="btn btn-outline-success">Play</a>
+      <div class="card-body" style="width: 20rem;" id="timerArea">
+          {{timerMinuteString}}:{{timerSecondsString}}
+          <fa-icon (click)="timerPlay()" icon="play"></fa-icon>
+          <fa-icon (click)="timerPause()" icon="pause"></fa-icon>
+          <fa-icon (click)="timerReset()" icon="stop"></fa-icon>
+
+          <input type="number" [(ngModel)]="timerSetMinute">:<input type="number" [(ngModel)]="timerSetSeconds">
+          <fa-icon (click)="timerSet()" icon="check-circle"></fa-icon>
       </div>
   </div>
 </nav>
