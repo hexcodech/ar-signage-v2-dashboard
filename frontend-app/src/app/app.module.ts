@@ -6,6 +6,7 @@ import { NgxElectronModule } from 'ngx-electron';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { NgbModule, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -30,6 +31,7 @@ library.add(faPlay, faPause, faStop, faCheckCircle);
     NgxElectronModule,
     FormsModule,
     FontAwesomeModule,
+    NgbModule.forRoot(),
     RouterModule.forRoot([
       { path: '', component: HomeComponent }
     ]),
@@ -37,6 +39,7 @@ library.add(faPlay, faPause, faStop, faCheckCircle);
   providers: [
     MqttService,
     RoomsService,
+    NgbDropdown,
   ],
   bootstrap: [AppComponent]
 })

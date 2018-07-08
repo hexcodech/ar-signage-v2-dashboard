@@ -3,14 +3,14 @@
   
   <ul class="navbar-nav">
       <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
-              {{selectedRoom}}
-          </a>
-          <div class="dropdown-menu">
-              <a class="dropdown-item" href="#">Room 1</a>
-              <a class="dropdown-item" href="#">Room 2</a>
-              <a class="dropdown-item" href="#">Room 3</a>
-          </div>
+        <div ngbDropdown>
+            <a ngbDropdownToggle class="nav-link dropdown-toggle" href="#">
+                {{selectedRoom}}
+            </a>
+            <div ngbDropdownMenu class="dropdown-menu">
+                <a *ngFor="let room of rooms" (click)="setRoom(room)" class="dropdown-item" href="#">{{room}}</a>
+            </div>
+        </div>
       </li>
   </ul>
 
