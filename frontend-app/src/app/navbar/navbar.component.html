@@ -21,7 +21,8 @@
           <fa-icon (click)="timerPause()" icon="pause"></fa-icon>
           <fa-icon (click)="timerReset()" icon="stop"></fa-icon>
 
-          <input type="number" [(ngModel)]="timerSetMinute">:<input type="number" [(ngModel)]="timerSetSeconds">
+          <input type="number" (keyup)="$event.keyCode === 13 ? timerSet() : null" [(ngModel)]="timerSetMinute">:
+          <input type="number" (keyup)="$event.keyCode === 13 ? timerSet() : null" [(ngModel)]="timerSetSeconds">
           <fa-icon (click)="timerSet()" icon="check-circle"></fa-icon>
       </div>
   </div>

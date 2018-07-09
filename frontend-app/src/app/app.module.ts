@@ -16,6 +16,8 @@ import { MqttService } from './services/mqtt.service';
 import { RoomsService } from './services/rooms.service';
 
 import { faPlay, faPause, faCheckCircle, faStop } from '@fortawesome/free-solid-svg-icons';
+import { ClientComponent } from './client/client.component';
+import { MediaComponent } from './media/media.component';
 
 library.add(faPlay, faPause, faStop, faCheckCircle);
 
@@ -24,6 +26,8 @@ library.add(faPlay, faPause, faStop, faCheckCircle);
     AppComponent,
     HomeComponent,
     NavbarComponent,
+    ClientComponent,
+    MediaComponent,
   ],
   imports: [
     BrowserModule,
