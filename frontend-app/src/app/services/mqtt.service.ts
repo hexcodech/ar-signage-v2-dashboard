@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
-import { ReplaySubject, Subject } from '../../../node_modules/rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +17,11 @@ export class MqttService {
   }
 
   private connect() {
-    this.mqttModule.setCallback((topic, message) => this.mqttMessageObservable.next({topic, message}));
+    this.mqttModule.setCallback((topic, message) => {
+      this.mqttMessageObservable.next({topic, message});
+    });
     this.mqttModule.connect().then(ip => {
       this.mqttModuleObservable.next(ip);
-    });
+    }).catch(err => console.error(err));
   }
 }

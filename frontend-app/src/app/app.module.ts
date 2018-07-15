@@ -18,6 +18,7 @@ import { RoomsService } from './services/rooms.service';
 import { faPlay, faPause, faCheckCircle, faStop } from '@fortawesome/free-solid-svg-icons';
 import { ClientComponent } from './client/client.component';
 import { MediaComponent } from './media/media.component';
+import { ClientsService } from './services/clients.service';
 
 library.add(faPlay, faPause, faStop, faCheckCircle);
 
@@ -43,6 +44,7 @@ library.add(faPlay, faPause, faStop, faCheckCircle);
   providers: [
     MqttService,
     RoomsService,
+    ClientsService,
     NgbDropdown,
   ],
   bootstrap: [AppComponent]

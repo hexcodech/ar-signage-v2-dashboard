@@ -25,11 +25,13 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.mqttService.mqttMessageObservable.subscribe(message => {
       this.mqttMessageHandler(message.topic, message.message);
+      this.changeRef.detectChanges();
     });
     this.roomsService.getRooms().then(rooms => {
       this.rooms = rooms;
       if (rooms.length > 0) {
         this.selectedRoom = rooms[0];
+        this.roomsService.selectedRoomObservable.next(rooms[0]);
         this.makeTimeString();
       }
     });
@@ -37,6 +39,7 @@ export class NavbarComponent implements OnInit {
 
   public setRoom(room) {
     this.selectedRoom = room;
+    this.roomsService.selectedRoomObservable.next(room);
     this.makeTimeString();
   }
 
@@ -78,7 +81,6 @@ export class NavbarComponent implements OnInit {
         roomName = topic.split(/[\/\/]/g)[1];
         this.timerSeconds[roomName] = parseInt(messageObject.value, 10);
         this.makeTimeString();
-        this.changeRef.detectChanges();
         break;
     }
   }

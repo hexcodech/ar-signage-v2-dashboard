@@ -12,6 +12,7 @@ export class AppComponent {
       console.log(`Client connected to mqtt ${ip}`);
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/+/timer/seconds`);
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/dashboard/roomsurl`);
+      this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/dashboard/clientsurl`);
 
       this.mqttService.mqttModule.mqttClient.publish(`ar-signage/devicediscovery`, JSON.stringify({
         value: {

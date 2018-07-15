@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ReplaySubject } from '../../../node_modules/rxjs';
 import { MqttService } from './mqtt.service';
-import { ReplaySubject } from 'rxjs';
+import { HttpClient } from '../../../node_modules/@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoomsService {
-  private rooms: [string];
-  private roomsObservable: ReplaySubject<[string]> = new ReplaySubject<[string]>(1);
-  public selectedRoomObservable: ReplaySubject<string> = new ReplaySubject<string>(1);
+export class ClientsService {
+  private clients: any;
+  private clientsObservable: ReplaySubject<any> = new ReplaySubject<any>(1);
 
   constructor(private http: HttpClient, private mqttService: MqttService) {
     this.mqttService.mqttMessageObservable.subscribe(message => {
@@ -26,22 +25,22 @@ export class RoomsService {
     }
 
     switch (topic) {
-      case `ar-signage/dashboard/roomsurl`:
-        this.http.get<[string]>(messageObject.value).subscribe(rooms => this.roomsObservable.next(rooms));
+      case `ar-signage/dashboard/clientsurl`:
+        this.http.get<any>(messageObject.value).subscribe(clients => this.clientsObservable.next(clients));
         break;
     }
   }
 
-  public getRooms(): Promise<[string]> {
+  public getClients(): Promise<[string]> {
     return new Promise(resolve => {
-      if (this.rooms) {
-        resolve(this.rooms);
+      if (this.clients) {
+        resolve(this.clients);
         return;
       }
 
-      this.roomsObservable.subscribe(rooms => {
-        this.rooms = rooms;
-        resolve(rooms);
+      this.clientsObservable.subscribe(clients => {
+        this.clients = clients;
+        resolve(clients);
       });
     });
   }
