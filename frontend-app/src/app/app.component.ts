@@ -13,6 +13,7 @@ export class AppComponent {
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/+/timer/seconds`);
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/dashboard/roomsurl`);
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/dashboard/clientsurl`);
+      this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/+/+/media/+`);
 
       this.mqttService.mqttModule.mqttClient.publish(`ar-signage/devicediscovery`, JSON.stringify({
         value: {

@@ -9,10 +9,26 @@
       <h6>{{client.clientname}}</h6>
       <h6 class="text-muted">Timer</h6>
       <div class="btn-toolbar btn-group-sm">
-        <button type="button" class="btn btn-primary mr-1">Text</button>
-        <button type="button" class="btn btn-secondary mr-1">Timer</button>
-        <button type="button" class="btn btn-danger mr-1">Blank</button>
+        <button type="button" class="btn btn-primary mr-1" (click)="setText(textModal, client.uid)">Text</button>
+        <button type="button" class="btn btn-secondary mr-1" (click)="setTimer(client.uid)">Timer</button>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #textModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Set text</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <input #textModalInput type="text" name="text">
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-primary" (click)="c(textModalInput.value)">Send</button>
+  </div>
+</ng-template>
