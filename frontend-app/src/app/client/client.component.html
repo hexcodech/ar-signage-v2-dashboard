@@ -1,13 +1,18 @@
 <h4>Clients</h4>
 
-<div class="card mb-2 p-2 border-default" *ngFor="let client of clients[selectedRoom]">
+<div 
+  class="card mb-2 p-2" 
+  *ngFor="let client of clients[selectedRoom]"
+  [class.border-primary]="client.mediaType === 'text'"
+  [class.border-default]="client.mediaType === 'timer'"
+  [class.border-success]="client.mediaType === 'image' || client.mediaType === 'video'">
   <div class="row">
     <div class="col-3">
       <div class="card sq media" style="background-image: url(https://source.unsplash.com/featured/)"></div>
     </div>
     <div class="col">
       <h6>{{client.clientname}}</h6>
-      <h6 class="text-muted">Timer</h6>
+      <h6 class="text-muted">{{client.mediaType && client.mediaType.charAt(0).toUpperCase() + client.mediaType.slice(1)}}</h6>
       <div class="btn-toolbar btn-group-sm">
         <button type="button" class="btn btn-primary mr-1" (click)="setText(textModal, client.uid)">Text</button>
         <button type="button" class="btn btn-secondary mr-1" (click)="setTimer(client.uid)">Timer</button>
