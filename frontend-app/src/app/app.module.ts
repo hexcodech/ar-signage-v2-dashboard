@@ -19,6 +19,7 @@ import { faPlay, faPause, faCheckCircle, faStop } from '@fortawesome/free-solid-
 import { ClientComponent } from './client/client.component';
 import { MediaComponent } from './media/media.component';
 import { ClientsService } from './services/clients.service';
+import { MediaListService } from './services/media-list.service';
 
 library.add(faPlay, faPause, faStop, faCheckCircle);
 
@@ -45,6 +46,7 @@ library.add(faPlay, faPause, faStop, faCheckCircle);
     MqttService,
     RoomsService,
     ClientsService,
+    MediaListService,
     NgbDropdown,
   ],
   bootstrap: [AppComponent]

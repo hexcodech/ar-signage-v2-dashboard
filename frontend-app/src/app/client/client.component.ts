@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ClientsService } from '../services/clients.service';
 import { MqttService } from '../services/mqtt.service';
 import { RoomsService } from '../services/rooms.service';
-import { NgbModal } from '../../../node_modules/@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-client',

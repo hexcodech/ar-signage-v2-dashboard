@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from '../../../node_modules/rxjs';
+import { ReplaySubject } from 'rxjs';
 import { MqttService } from './mqtt.service';
-import { HttpClient } from '../../../node_modules/@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'

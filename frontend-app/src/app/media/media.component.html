@@ -1,3 +1,20 @@
-<p>
-  media works!
-</p>
+<div class="row">
+  <div class="col">
+    <h4>Media</h4>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <div class="card" *ngFor="let client of mediaList[selectedRoom]">
+      <div class="card-header">{{client.name}}</div>
+      <div class="card-body">
+        <div *ngFor="let mediaType of client.children">
+          <h6>{{mediaType.name.charAt(0).toUpperCase() + mediaType.name.substr(1)}}</h6>
+          <div class="d-flex flex-wrap">
+            <div *ngFor="let media of mediaType.children" class="card square media" placement="bottom" [ngbTooltip]="media.name"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
