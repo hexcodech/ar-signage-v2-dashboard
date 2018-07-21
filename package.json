@@ -7,10 +7,18 @@
   "author": "Marc Berchtold <me@echolot.io>",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "io.echolot.ar-signage.dashboard",
+    "productName": "AR Signage v2 Dashboard",
+    "copyright": "Copyright Marc Berchtold <Echolot> 2018"
   },
   "devDependencies": {
-    "electron": "^2.0.0"
+    "electron": "^2.0.0",
+    "electron-builder": "^20.24.4"
   },
   "dependencies": {
     "evilscan": "^1.6.1",
