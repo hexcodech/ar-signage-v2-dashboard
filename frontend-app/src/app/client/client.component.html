@@ -3,16 +3,23 @@
 <div 
   class="card mb-2 p-2" 
   *ngFor="let client of clients[selectedRoom]"
-  [class.border-primary]="client.mediaType === 'text'"
-  [class.border-default]="client.mediaType === 'timer'"
-  [class.border-success]="client.mediaType === 'image' || client.mediaType === 'video'">
+  [class.border-primary]="client?.media?.type === 'text'"
+  [class.border-default]="client?.media?.type === 'timer'"
+  [class.border-success]="client?.media?.type === 'image' || client?.media?.type === 'video'">
   <div class="row">
     <div class="col-3">
-      <div class="card sq media" style="background-image: url(https://source.unsplash.com/featured/)"></div>
+      <div class="card sq media">
+
+      </div>
     </div>
     <div class="col">
-      <h6>{{client.clientname}}</h6>
-      <h6 class="text-muted">{{client.mediaType && client.mediaType.charAt(0).toUpperCase() + client.mediaType.slice(1)}}</h6>
+      <h6>{{client?.clientname}}</h6>
+      <h6 class="text-muted">
+        {{client?.media?.type && client?.media?.type.charAt(0).toUpperCase() + client?.media?.type.slice(1)}}
+        <span *ngIf="client?.media?.type === 'text'"> - {{(client?.media?.content.length>20)? (client?.media?.content | slice:0:20)+'..':(client?.media?.content)}}</span>
+        <span *ngIf="client?.media?.type === 'image' || client?.media?.type === 'video'"> - {{client?.media?.content.split('/')[client?.media?.content.split('/').length-1].split('.')[0]}}</span>
+      </h6>
+      <p *ngIf="client?.media?.type === 'video'"><ngb-progressbar type="info" [value]="client.video_curenttime?.current / (client.video_curenttime?.total / 100)">{{client.video_curenttime?.current | number:'1.0-0'}}/{{client.video_curenttime?.total | number:'1.0-0'}}</ngb-progressbar></p>
       <div class="btn-toolbar btn-group-sm">
         <button type="button" class="btn btn-primary mr-1" (click)="setText(textModal, client.uid)">Text</button>
         <button type="button" class="btn btn-secondary mr-1" (click)="setTimer(client.uid)">Timer</button>

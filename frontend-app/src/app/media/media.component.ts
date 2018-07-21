@@ -44,7 +44,14 @@ export class MediaComponent implements OnInit {
           this.clients[clients[clientUID].roomname] = [];
         }
         if (!this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID)) {
-          this.clients[clients[clientUID].roomname].push({uid: clientUID, clientname: clients[clientUID].clientname, mediaType: null});
+          this.clients[clients[clientUID].roomname].push({
+            uid: clientUID,
+            clientname: clients[clientUID].clientname,
+            mediaid: null,
+            audio_background_mediaid: null,
+            audio_background_control: null,
+            audio_background_volume: null,
+          });
         } else {
           this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID).clientname = clients[clientUID].clientname;
         }
@@ -53,7 +60,7 @@ export class MediaComponent implements OnInit {
   }
 
   playMedia(folderName: string, clientName: string, fileName: string) {
-    const uid = this.clients[this.selectedRoom].find(x => x.clientname === clientName).uid;
+    const uid = this.getClientByClientname(clientName).uid;
     const mediaId = `${this.selectedRoom}/${clientName}/${folderName}/${fileName}`;
     switch (folderName) {
       case 'videos':
@@ -81,21 +88,113 @@ export class MediaComponent implements OnInit {
         this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background`, JSON.stringify({
           value: mediaId,
         }), {retain: true});
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background/control`, JSON.stringify({
+          value: 'START',
+        }), {retain: true});
         break;
     }
   }
 
+  backgroundAudioControl(action: string, clientName: string) {
+    const client = this.getClientByClientname(clientName);
+    const uid = client.uid;
+
+    if (!client.audio_background_mediaid) {
+      this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background/control`, JSON.stringify({
+        value: 'RESET',
+      }), {retain: true});
+      return;
+    }
+
+    this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background/control`, JSON.stringify({
+      value: action,
+    }), {retain: true});
+    if (action === 'RESET') {
+      this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background`, JSON.stringify({
+        value: null,
+      }), {retain: true});
+    }
+  }
+
+  getClientByClientname(clientName: string) {
+    return this.clients[this.selectedRoom].find(x => x.clientname === clientName);
+  }
+
   private mqttMessageHandler(topic, message) {
     let messageObject;
+    let roomname, uid;
     try {
       messageObject = JSON.parse(message.toString());
     } catch (err) {
       console.error(`mqttMessageHandler JSON parse error: ${err.toString()}`);
     }
 
-    switch (topic) {
-      case `ar-signage/dashboard/mediacacheurl`:
+    switch (true) {
+      case topic === `ar-signage/dashboard/mediacacheurl`:
         this.mediaCacheUrl = messageObject.value;
+        break;
+      case topic.match(/^ar-signage\/.+\/.+\/media$/g) && topic.match(/^ar-signage\/.+\/.+\/media$/g).length > 0:
+        roomname = topic.split(/[\/\/]/g)[1];
+        uid = topic.split(/[\/\/]/g)[2];
+        if (!roomname || !uid) {
+          return;
+        }
+        if (!this.clients[roomname]) {
+          this.clients[roomname] = [];
+        }
+        if (!this.clients[roomname].find(x => x.uid === uid)) {
+          this.clients[roomname].push({
+            uid,
+            mediaid: null,
+            audio_background_mediaid: null,
+            audio_background_control: null,
+            audio_background_volume: null,
+          });
+        }
+
+        this.clients[roomname].find(x => x.uid === uid).mediaid = messageObject.value.content;
+        break;
+      case topic.match(/^ar-signage\/.+\/.+\/audio\/background$/g) && topic.match(/^ar-signage\/.+\/.+\/audio\/background$/g).length > 0:
+        roomname = topic.split(/[\/\/]/g)[1];
+        uid = topic.split(/[\/\/]/g)[2];
+        if (!roomname || !uid) {
+          return;
+        }
+        if (!this.clients[roomname]) {
+          this.clients[roomname] = [];
+        }
+        if (!this.clients[roomname].find(x => x.uid === uid)) {
+          this.clients[roomname].push({
+            uid,
+            audio_background_mediaid: null,
+            audio_background_control: null,
+            audio_background_volume: null,
+          });
+        }
+
+        this.clients[roomname].find(x => x.uid === uid).audio_background_mediaid = messageObject.value;
+        break;
+      case topic.match(/^ar-signage\/.+\/.+\/audio\/background\/control$/g) &&
+           topic.match(/^ar-signage\/.+\/.+\/audio\/background\/control$/g).length > 0:
+        roomname = topic.split(/[\/\/]/g)[1];
+        uid = topic.split(/[\/\/]/g)[2];
+        if (!roomname || !uid) {
+          return;
+        }
+        if (!this.clients[roomname]) {
+          this.clients[roomname] = [];
+        }
+        if (!this.clients[roomname].find(x => x.uid === uid)) {
+          this.clients[roomname].push({
+            uid,
+            mediaid: null,
+            audio_background_mediaid: null,
+            audio_background_control: null,
+            audio_background_volume: null,
+          });
+        }
+
+        this.clients[roomname].find(x => x.uid === uid).audio_background_control = messageObject.value;
         break;
     }
   }

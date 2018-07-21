@@ -32,7 +32,12 @@ export class ClientComponent implements OnInit {
           this.clients[clients[clientUID].roomname] = [];
         }
         if (!this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID)) {
-          this.clients[clients[clientUID].roomname].push({uid: clientUID, clientname: clients[clientUID].clientname, mediaType: null});
+          this.clients[clients[clientUID].roomname].push({
+            uid: clientUID,
+            clientname: clients[clientUID].clientname,
+            media: null,
+            video_curenttime: null,
+          });
         } else {
           this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID).clientname = clients[clientUID].clientname;
         }
@@ -61,10 +66,34 @@ export class ClientComponent implements OnInit {
           this.clients[roomname] = [];
         }
         if (!this.clients[roomname].find(x => x.uid === uid)) {
-          this.clients[roomname].push({uid, mediaType: null});
+          this.clients[roomname].push({
+            uid,
+            media: null,
+            video_curenttime: null,
+          });
         }
 
-        this.clients[roomname].find(x => x.uid === uid).mediaType = messageObject.value.type;
+        this.clients[roomname].find(x => x.uid === uid).media = messageObject.value;
+        break;
+      case topic.match(/^ar-signage\/.+\/.+\/media\/video\/currenttime$/g) &&
+      topic.match(/^ar-signage\/.+\/.+\/media\/video\/currenttime$/g).length > 0:
+        roomname = topic.split(/[\/\/]/g)[1];
+        uid = topic.split(/[\/\/]/g)[2];
+        if (!roomname || !uid) {
+          return;
+        }
+        if (!this.clients[roomname]) {
+          this.clients[roomname] = [];
+        }
+        if (!this.clients[roomname].find(x => x.uid === uid)) {
+          this.clients[roomname].push({
+            uid,
+            media: null,
+            video_curenttime: null,
+          });
+        }
+
+        this.clients[roomname].find(x => x.uid === uid).video_curenttime = messageObject.value;
         break;
     }
   }
