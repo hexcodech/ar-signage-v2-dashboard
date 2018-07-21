@@ -54,12 +54,13 @@ export class MediaComponent implements OnInit {
 
   playMedia(folderName: string, clientName: string, fileName: string) {
     const uid = this.clients[this.selectedRoom].find(x => x.clientname === clientName).uid;
+    const mediaId = `${this.selectedRoom}/${clientName}/${folderName}/${fileName}`;
     switch (folderName) {
       case 'videos':
         this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/media`, JSON.stringify({
           value: {
             type: 'video',
-            content: `${this.selectedRoom}/${clientName}/${folderName}/${fileName}`
+            content: mediaId,
           }
         }), {retain: true});
         break;
@@ -67,8 +68,18 @@ export class MediaComponent implements OnInit {
         this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/media`, JSON.stringify({
           value: {
             type: 'image',
-            content: `${this.selectedRoom}/${clientName}/${folderName}/${fileName}`
+            content: mediaId,
           }
+        }), {retain: true});
+        break;
+      case 'audio_oneshot':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/oneshot`, JSON.stringify({
+          value: mediaId,
+        }));
+        break;
+      case 'audio_background':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background`, JSON.stringify({
+          value: mediaId,
         }), {retain: true});
         break;
     }

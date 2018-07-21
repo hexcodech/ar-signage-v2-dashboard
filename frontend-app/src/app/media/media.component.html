@@ -1,4 +1,3 @@
-{{mediaList | json}}
 <div class="row">
   <div class="col">
     <h4>Media</h4>
@@ -10,8 +9,8 @@
       <div class="card-header">{{client.name}}</div>
       <div class="card-body">
         <div *ngFor="let mediaType of client.children">
-          <h6>{{mediaType.name.charAt(0).toUpperCase() + mediaType.name.substr(1)}}</h6>
-          <div class="d-flex flex-wrap">
+          <h6 *ngIf="mediaType.children.constructor.name === 'Array'">{{(mediaType.name.charAt(0).toUpperCase() + mediaType.name.substr(1)).replace('_', ' ')}}</h6>
+          <div *ngIf="mediaType.children.constructor.name === 'Array'" class="d-flex flex-wrap">
             <div 
               *ngFor="let media of mediaType.children" 
               (click)="playMedia(mediaType.name, client.name, media.name)" 
@@ -25,6 +24,12 @@
                 [src]="mediaCacheUrl+'/'+selectedRoom+'/'+client.name+'/'+mediaType.name+'/'+media.name"
                 style="border-radius: 0.25rem; width: 100%; height: 100%;"
               >
+              <div 
+                *ngIf="mediaType.name === 'audio_oneshot' || mediaType.name === 'audio_background'"
+                style="width: 100%; height: 100%; overflow: hidden;"
+              >
+                {{media.name}}
+              </div>
             </div>
           </div>
         </div>
