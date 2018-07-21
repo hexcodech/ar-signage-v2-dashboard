@@ -12,6 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ClientComponent implements OnInit {
   public selectedRoom: string;
   public clients: any = {};
+  public mediaCacheUrl: string;
 
   constructor(
     private modalService: NgbModal,
@@ -37,6 +38,7 @@ export class ClientComponent implements OnInit {
             clientname: clients[clientUID].clientname,
             media: null,
             video_curenttime: null,
+            audio_background_control: null,
           });
         } else {
           this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID).clientname = clients[clientUID].clientname;
@@ -56,6 +58,9 @@ export class ClientComponent implements OnInit {
     }
 
     switch (true) {
+      case topic === `ar-signage/dashboard/mediacacheurl`:
+        this.mediaCacheUrl = messageObject.value;
+        break;
       case topic.match(/^ar-signage\/.+\/.+\/media$/g) && topic.match(/^ar-signage\/.+\/.+\/media$/g).length > 0:
         roomname = topic.split(/[\/\/]/g)[1];
         uid = topic.split(/[\/\/]/g)[2];
@@ -70,6 +75,7 @@ export class ClientComponent implements OnInit {
             uid,
             media: null,
             video_curenttime: null,
+            audio_background_control: null,
           });
         }
 
@@ -90,10 +96,35 @@ export class ClientComponent implements OnInit {
             uid,
             media: null,
             video_curenttime: null,
+            audio_background_control: null,
           });
         }
 
         this.clients[roomname].find(x => x.uid === uid).video_curenttime = messageObject.value;
+        if (document.getElementById('video' + uid) && messageObject.value.current > 0) {
+          document.getElementById('video' + uid)['currentTime'] = messageObject.value.current;
+        }
+        break;
+      case topic.match(/^ar-signage\/.+\/.+\/audio\/background\/control$/g) &&
+      topic.match(/^ar-signage\/.+\/.+\/audio\/background\/control$/g).length > 0:
+        roomname = topic.split(/[\/\/]/g)[1];
+        uid = topic.split(/[\/\/]/g)[2];
+        if (!roomname || !uid) {
+          return;
+        }
+        if (!this.clients[roomname]) {
+          this.clients[roomname] = [];
+        }
+        if (!this.clients[roomname].find(x => x.uid === uid)) {
+          this.clients[roomname].push({
+            uid,
+            media: null,
+            video_curenttime: null,
+            audio_background_control: null,
+          });
+        }
+
+        this.clients[roomname].find(x => x.uid === uid).audio_background_control = messageObject.value;
         break;
     }
   }

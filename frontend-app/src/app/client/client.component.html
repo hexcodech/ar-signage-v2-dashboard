@@ -9,15 +9,37 @@
   <div class="row">
     <div class="col-3">
       <div class="card sq media">
-
+        <img 
+          class="d-flex"
+          *ngIf="client?.media?.type === 'image'"
+          [src]="mediaCacheUrl+'/'+client?.media?.content"
+          style="border-radius: 0.25rem; width: 100%; height: 100%;"
+        >
+        <video [id]="'video'+client?.uid"
+          *ngIf="client?.media?.type === 'video'"
+          autoplay
+          muted
+          [src]="mediaCacheUrl+'/'+client?.media?.content"
+          style="border-radius: 0.25rem; width: 100%; height: 100%;"
+        >
+        </video>
+        <span 
+          *ngIf="client?.media?.type === 'text'"
+          style="height: 100%; width: 100%; text-align: center; line-height: 5.25rem;"
+        >Text</span>
+        <span 
+          *ngIf="client?.media?.type === 'timer'"
+          style="height: 100%; width: 100%; text-align: center; line-height: 5.25rem;"
+        >Timer</span>
       </div>
     </div>
     <div class="col">
       <h6>{{client?.clientname}}</h6>
       <h6 class="text-muted">
         {{client?.media?.type && client?.media?.type.charAt(0).toUpperCase() + client?.media?.type.slice(1)}}
-        <span *ngIf="client?.media?.type === 'text'"> - {{(client?.media?.content.length>20)? (client?.media?.content | slice:0:20)+'..':(client?.media?.content)}}</span>
+        <span *ngIf="client?.media?.type === 'text'"> - {{(client?.media?.content.length>20)? (client?.media?.content | slice:0:20)+'...':(client?.media?.content)}}</span>
         <span *ngIf="client?.media?.type === 'image' || client?.media?.type === 'video'"> - {{client?.media?.content.split('/')[client?.media?.content.split('/').length-1].split('.')[0]}}</span>
+        <fa-icon *ngIf="client?.audio_background_control === 'START'" icon="volume-up"></fa-icon>
       </h6>
       <p *ngIf="client?.media?.type === 'video'"><ngb-progressbar type="info" [value]="client.video_curenttime?.current / (client.video_curenttime?.total / 100)">{{client.video_curenttime?.current | number:'1.0-0'}}/{{client.video_curenttime?.total | number:'1.0-0'}}</ngb-progressbar></p>
       <div class="btn-toolbar btn-group-sm">

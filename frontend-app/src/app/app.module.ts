@@ -15,13 +15,13 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { MqttService } from './services/mqtt.service';
 import { RoomsService } from './services/rooms.service';
 
-import { faPlay, faPause, faCheckCircle, faStop } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faCheckCircle, faStop, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { ClientComponent } from './client/client.component';
 import { MediaComponent } from './media/media.component';
 import { ClientsService } from './services/clients.service';
 import { MediaListService } from './services/media-list.service';
 
-library.add(faPlay, faPause, faStop, faCheckCircle);
+library.add(faPlay, faPause, faStop, faCheckCircle, faVolumeUp);
 
 @NgModule({
   declarations: [
