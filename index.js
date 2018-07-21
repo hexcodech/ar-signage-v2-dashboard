@@ -9,7 +9,7 @@ let win;
 app.on('ready', createWindow);
 
 function createWindow() {
-    win = new BrowserWindow({width: 1600, height: 900});
+    win = new BrowserWindow({width: 1600, height: 900, webPreferences:{webSecurity: false}});
 
     win.loadURL(fs.existsSync('./frontend-app/dist/index.html') ? 
       url.format({

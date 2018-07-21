@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from '../../../node_modules/rxjs';
-import { HttpClient } from '../../../node_modules/@angular/common/http';
+import { ReplaySubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { MqttService } from './mqtt.service';
 
 @Injectable({

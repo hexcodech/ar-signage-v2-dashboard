@@ -20,6 +20,7 @@ import { ClientComponent } from './client/client.component';
 import { MediaComponent } from './media/media.component';
 import { ClientsService } from './services/clients.service';
 import { MediaListService } from './services/media-list.service';
+import { MediaCacheService } from './services/media-cache.service';
 
 library.add(faPlay, faPause, faStop, faCheckCircle, faVolumeUp);
 
@@ -47,6 +48,7 @@ library.add(faPlay, faPause, faStop, faCheckCircle, faVolumeUp);
     RoomsService,
     ClientsService,
     MediaListService,
+    MediaCacheService,
     NgbDropdown,
   ],
   bootstrap: [AppComponent]

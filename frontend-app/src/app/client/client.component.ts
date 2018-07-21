@@ -3,6 +3,7 @@ import { ClientsService } from '../services/clients.service';
 import { MqttService } from '../services/mqtt.service';
 import { RoomsService } from '../services/rooms.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MediaCacheService } from '../services/media-cache.service';
 
 @Component({
   selector: 'app-client',
@@ -19,6 +20,7 @@ export class ClientComponent implements OnInit {
     private mqttService: MqttService,
     private clientsService: ClientsService,
     private roomsService: RoomsService,
+    private mediaCacheService: MediaCacheService,
     private changeRef: ChangeDetectorRef,
   ) { }
 
@@ -60,6 +62,17 @@ export class ClientComponent implements OnInit {
     switch (true) {
       case topic === `ar-signage/dashboard/mediacacheurl`:
         this.mediaCacheUrl = messageObject.value;
+        this.mediaCacheService.init(messageObject.value);
+        // Download all already known videos
+        for (const roomKey of Object.keys(this.clients)) {
+          const foundClient = this.clients[roomKey].find(x => x.media && x.media.type === 'video' && x.media.content);
+          if (foundClient) {
+            this.mediaCacheService.mediaCacheModule.getLink(foundClient.media.content).then((url) => {
+              foundClient.media.videoUrl = url;
+              this.changeRef.detectChanges();
+            }).catch((err) => console.error(err));
+          }
+        }
         break;
       case topic.match(/^ar-signage\/.+\/.+\/media$/g) && topic.match(/^ar-signage\/.+\/.+\/media$/g).length > 0:
         roomname = topic.split(/[\/\/]/g)[1];
@@ -80,6 +93,13 @@ export class ClientComponent implements OnInit {
         }
 
         this.clients[roomname].find(x => x.uid === uid).media = messageObject.value;
+        // Download if media type is a video
+        if (messageObject.value.type === 'video' && this.mediaCacheService.mediaCacheModule) {
+          this.mediaCacheService.mediaCacheModule.getLink(messageObject.value.content).then((url) => {
+            this.clients[roomname].find(x => x.uid === uid).media.videoUrl = url;
+            this.changeRef.detectChanges();
+          }).catch((err) => console.error(err));
+        }
         break;
       case topic.match(/^ar-signage\/.+\/.+\/media\/video\/currenttime$/g) &&
       topic.match(/^ar-signage\/.+\/.+\/media\/video\/currenttime$/g).length > 0:

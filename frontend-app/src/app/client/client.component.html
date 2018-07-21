@@ -16,10 +16,10 @@
           style="border-radius: 0.25rem; width: 100%; height: 100%;"
         >
         <video [id]="'video'+client?.uid"
-          *ngIf="client?.media?.type === 'video'"
+          *ngIf="client?.media?.type === 'video' && client?.media?.videoUrl"
           autoplay
           muted
-          [src]="mediaCacheUrl+'/'+client?.media?.content"
+          [src]="client?.media?.videoUrl"
           style="border-radius: 0.25rem; width: 100%; height: 100%;"
         >
         </video>
