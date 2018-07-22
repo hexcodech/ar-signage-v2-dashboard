@@ -14,6 +14,7 @@ export class ClientComponent implements OnInit {
   public selectedRoom: string;
   public clients: any = {};
   public mediaCacheUrl: string;
+  public Date = Date;
 
   constructor(
     private modalService: NgbModal,
@@ -41,6 +42,7 @@ export class ClientComponent implements OnInit {
             media: null,
             video_curenttime: null,
             audio_background_control: null,
+            alive: null,
           });
         } else {
           this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID).clientname = clients[clientUID].clientname;
@@ -84,6 +86,25 @@ export class ClientComponent implements OnInit {
           }
         }
         break;
+      case topic.match(/^ar-signage\/.+\/.+\/alive$/g) && topic.match(/^ar-signage\/.+\/.+\/alive$/g).length > 0:
+        roomname = topic.split(/[\/\/]/g)[1];
+        uid = topic.split(/[\/\/]/g)[2];
+        if (!roomname || !uid) {
+          return;
+        }
+
+        if (!this.clients[roomname]) {
+          this.clients[roomname] = [];
+        }
+        if (!this.clients[roomname].find(x => x.uid === uid)) {
+          this.clients[roomname].push({
+            uid,
+            alive: null,
+          });
+        }
+
+        this.clients[roomname].find(x => x.uid === uid).alive = messageObject.value;
+        break;
       case topic.match(/^ar-signage\/.+\/.+\/media$/g) && topic.match(/^ar-signage\/.+\/.+\/media$/g).length > 0:
         roomname = topic.split(/[\/\/]/g)[1];
         uid = topic.split(/[\/\/]/g)[2];
@@ -98,8 +119,6 @@ export class ClientComponent implements OnInit {
           this.clients[roomname].push({
             uid,
             media: null,
-            video_curenttime: null,
-            audio_background_control: null,
           });
         }
 
@@ -125,9 +144,7 @@ export class ClientComponent implements OnInit {
         if (!this.clients[roomname].find(x => x.uid === uid)) {
           this.clients[roomname].push({
             uid,
-            media: null,
             video_curenttime: null,
-            audio_background_control: null,
           });
         }
 
@@ -149,8 +166,6 @@ export class ClientComponent implements OnInit {
         if (!this.clients[roomname].find(x => x.uid === uid)) {
           this.clients[roomname].push({
             uid,
-            media: null,
-            video_curenttime: null,
             audio_background_control: null,
           });
         }

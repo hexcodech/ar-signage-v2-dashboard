@@ -160,9 +160,6 @@ export class MediaComponent implements OnInit {
           this.clients[roomname].push({
             uid,
             mediaid: null,
-            audio_background_mediaid: null,
-            audio_background_control: null,
-            audio_background_volume: null,
           });
         }
 
@@ -181,8 +178,6 @@ export class MediaComponent implements OnInit {
           this.clients[roomname].push({
             uid,
             audio_background_mediaid: null,
-            audio_background_control: null,
-            audio_background_volume: null,
           });
         }
 
@@ -201,10 +196,7 @@ export class MediaComponent implements OnInit {
         if (!this.clients[roomname].find(x => x.uid === uid)) {
           this.clients[roomname].push({
             uid,
-            mediaid: null,
-            audio_background_mediaid: null,
             audio_background_control: null,
-            audio_background_volume: null,
           });
         }
 

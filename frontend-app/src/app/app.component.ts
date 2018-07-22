@@ -16,6 +16,7 @@ export class AppComponent {
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/dashboard/medialisturl`);
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/dashboard/mediacacheurl`);
 
+      this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/+/+/alive`);
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/+/+/media`);
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/+/+/media/video/currenttime`);
       this.mqttService.mqttModule.mqttClient.subscribe(`ar-signage/+/+/audio/background`);
