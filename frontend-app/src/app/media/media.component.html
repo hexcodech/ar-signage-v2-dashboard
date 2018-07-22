@@ -5,63 +5,65 @@
 </div>
 <div class="row">
   <div class="col">
-    <div class="card" *ngFor="let client of mediaList[selectedRoom]">
-      <div class="card-header">{{client.name}}</div>
-      <div class="card-body">
-        <div *ngFor="let mediaType of client.children">
-          <h6 *ngIf="mediaType.children.constructor.name === 'Array'">
-            {{(mediaType.name.charAt(0).toUpperCase() + mediaType.name.substr(1)).replace('_', ' ')}}
-            <button 
-              *ngIf="mediaType.name === 'audio_background'"
-              (click)="backgroundAudioControl('START', client.name)"
-              type="button"
-              class="btn btn-sm"
-              [class.btn-success]="getClientByClientname(client.name)?.audio_background_control === 'START'"
-              [disabled]="!getClientByClientname(client.name)?.audio_background_mediaid"
-            >
-              <fa-icon icon="play"></fa-icon>
-            </button>
-            <button 
-              *ngIf="mediaType.name === 'audio_background'" 
-              (click)="backgroundAudioControl('PAUSE', client.name)" 
-              type="button" 
-              class="btn btn-sm" 
-              [class.btn-warning]="getClientByClientname(client.name)?.audio_background_control === 'PAUSE'"
-              [disabled]="!getClientByClientname(client.name)?.audio_background_mediaid"
-            >
-              <fa-icon icon="pause"></fa-icon>
-            </button>
-            <button 
-              *ngIf="mediaType.name === 'audio_background'" 
-              (click)="backgroundAudioControl('RESET', client.name)" 
-              type="button" 
-              class="btn btn-sm" 
-              [class.btn-danger]="getClientByClientname(client.name)?.audio_background_control === 'RESET'"
-            >
-              <fa-icon icon="stop"></fa-icon>
-            </button>
-          </h6>
-          <div *ngIf="mediaType.children.constructor.name === 'Array'" class="d-flex flex-wrap">
-            <div 
-              *ngFor="let media of mediaType.children" 
-              (click)="playMedia(mediaType.name, client.name, media.name)" 
-              class="card square media"
-              [class.bg-success]="getClientByClientname(client.name)?.audio_background_mediaid === selectedRoom+'/'+client.name+'/'+mediaType.name+'/'+media.name ||
-              getClientByClientname(client.name)?.mediaid === selectedRoom+'/'+client.name+'/'+mediaType.name+'/'+media.name"
-              placement="bottom" 
-              [ngbTooltip]="media.name"
-            >
-              <img 
-                class="d-flex"
-                *ngIf="mediaType.name === 'images'"
-                [src]="mediaCacheUrl+'/'+selectedRoom+'/'+client.name+'/'+mediaType.name+'/'+media.name"
-                style="border-radius: 0.25rem; width: 90%; height: 90%; margin-top: 5%; margin-left: 5%;"
+    <div *ngFor="let client of mediaList[selectedRoom]">
+      <div class="card" *ngIf="getClientByClientname(client.name)">
+        <div class="card-header">{{client.name}}</div>
+        <div class="card-body">
+          <div *ngFor="let mediaType of client.children">
+            <h6 *ngIf="mediaType?.children?.constructor.name === 'Array'">
+              {{(mediaType?.name?.charAt(0).toUpperCase() + mediaType?.name?.substr(1)).replace('_', ' ')}}
+              <button 
+                *ngIf="mediaType?.name === 'audio_background'"
+                (click)="backgroundAudioControl('START', client.name)"
+                type="button"
+                class="btn btn-sm"
+                [class.btn-success]="getClientByClientname(client.name)?.audio_background_control === 'START'"
+                [disabled]="!getClientByClientname(client.name)?.audio_background_mediaid"
               >
+                <fa-icon icon="play"></fa-icon>
+              </button>
+              <button 
+                *ngIf="mediaType?.name === 'audio_background'" 
+                (click)="backgroundAudioControl('PAUSE', client.name)" 
+                type="button" 
+                class="btn btn-sm" 
+                [class.btn-warning]="getClientByClientname(client.name)?.audio_background_control === 'PAUSE'"
+                [disabled]="!getClientByClientname(client.name)?.audio_background_mediaid"
+              >
+                <fa-icon icon="pause"></fa-icon>
+              </button>
+              <button 
+                *ngIf="mediaType?.name === 'audio_background'" 
+                (click)="backgroundAudioControl('RESET', client.name)" 
+                type="button" 
+                class="btn btn-sm" 
+                [class.btn-danger]="getClientByClientname(client.name)?.audio_background_control === 'RESET'"
+              >
+                <fa-icon icon="stop"></fa-icon>
+              </button>
+            </h6>
+            <div *ngIf="mediaType?.children?.constructor.name === 'Array'" class="d-flex flex-wrap">
               <div 
-                *ngIf="mediaType.name === 'audio_oneshot' || mediaType.name === 'audio_background'"
-                style="width: 100%; height: 100%; overflow: hidden;"
+                *ngFor="let media of mediaType.children" 
+                (click)="playMedia(mediaType.name, client.name, media.name)" 
+                class="card square media"
+                [class.bg-success]="getClientByClientname(client.name)?.audio_background_mediaid === selectedRoom+'/'+client?.name+'/'+mediaType?.name+'/'+media?.name ||
+                getClientByClientname(client.name)?.mediaid === selectedRoom+'/'+client?.name+'/'+mediaType?.name+'/'+media?.name"
+                placement="bottom" 
+                [ngbTooltip]="media?.name"
               >
-                {{media.name.split('.')[0]}}
+                <img 
+                  class="d-flex"
+                  *ngIf="mediaType?.name === 'images'"
+                  [src]="mediaCacheUrl+'/'+selectedRoom+'/'+client?.name+'/'+mediaType?.name+'/'+media?.name"
+                  style="border-radius: 0.25rem; width: 90%; height: 90%; margin-top: 5%; margin-left: 5%;"
+                >
+                <div 
+                  *ngIf="mediaType?.name === 'audio_oneshot' || mediaType?.name === 'audio_background'"
+                  style="width: 100%; height: 100%; overflow: hidden;"
+                >
+                  {{media?.name?.split('.')[0]}}
+                </div>
               </div>
             </div>
           </div>

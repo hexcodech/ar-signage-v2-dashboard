@@ -56,6 +56,16 @@ export class MediaComponent implements OnInit {
           this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID).clientname = clients[clientUID].clientname;
         }
       }
+
+      // Remove clients not anymore existing
+      for (const roomKey of Object.keys(this.clients)) {
+        for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
+          if (!(clients[this.clients[roomKey][clientIndex].uid]
+            && clients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
+            this.clients[roomKey].splice(clientIndex, 1);
+          }
+        }
+      }
     });
   }
 
@@ -117,6 +127,10 @@ export class MediaComponent implements OnInit {
   }
 
   getClientByClientname(clientName: string) {
+    if (!this.clients || !this.clients[this.selectedRoom]) {
+      return null;
+    }
+
     return this.clients[this.selectedRoom].find(x => x.clientname === clientName);
   }
 
@@ -197,6 +211,20 @@ export class MediaComponent implements OnInit {
         this.clients[roomname].find(x => x.uid === uid).audio_background_control = messageObject.value;
         break;
     }
+  }
+
+  filterMediaList(selectedRoom) {
+    const copyMediaList = this.mediaList;
+
+    console.dir(copyMediaList[selectedRoom]);
+    for (const mediaRoomIndex of Object.keys(this.mediaList)) {
+      for (let mediaClientIndex = 0; mediaClientIndex < this.mediaList[mediaRoomIndex].length; mediaClientIndex++) {
+        if (!this.getClientByClientname(this.mediaList[mediaRoomIndex][mediaClientIndex].name)) {
+          copyMediaList[mediaRoomIndex].splice(mediaClientIndex, 1);
+        }
+      }
+    }
+    return copyMediaList[selectedRoom];
   }
 
 }

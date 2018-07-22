@@ -46,6 +46,16 @@ export class ClientComponent implements OnInit {
           this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID).clientname = clients[clientUID].clientname;
         }
       }
+
+      // Remove clients not anymore existing
+      for (const roomKey of Object.keys(this.clients)) {
+        for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
+          if (!(clients[this.clients[roomKey][clientIndex].uid]
+            && clients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
+            this.clients[roomKey].splice(clientIndex, 1);
+          }
+        }
+      }
     });
     this.roomsService.selectedRoomObservable.subscribe(room => this.selectedRoom = room);
   }
@@ -80,6 +90,7 @@ export class ClientComponent implements OnInit {
         if (!roomname || !uid) {
           return;
         }
+
         if (!this.clients[roomname]) {
           this.clients[roomname] = [];
         }
