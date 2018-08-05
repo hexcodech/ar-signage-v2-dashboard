@@ -11,10 +11,10 @@ module.exports = class UUID {
             return networkInterfaces.en0[1];
         else if (networkInterfaces.eth0)
             return networkInterfaces.eth0[1];
-        else if (networkInterfaces[0][1])
-            return networkInterfaces[0][1];
+        else if (networkInterfaces[Object.keys(networkInterfaces)[0]][1])
+            return networkInterfaces[Object.keys(networkInterfaces)[0]][1];
         else
-            return networkInterfaces[0][0];
+            return networkInterfaces[Object.keys(networkInterfaces)[0]][0];
     }
 
     getUUID() {

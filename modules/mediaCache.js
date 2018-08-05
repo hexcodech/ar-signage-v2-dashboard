@@ -31,9 +31,11 @@ module.exports = class MediaCache {
     getLink(mediaId) {
         return new Promise((resolve, reject) => {
             fs.access(`${this.mediaCachePath}/${mediaId}`, (err) => {
+                const sanitizedPath = this.mediaCachePath.replace(/\\/g, '/');
+
                 if (err) { // File doesn't exist
                     this.downloadAndStore(mediaId).then(() => {
-                        resolve(`file://${this.mediaCachePath}/${mediaId}`);
+                        resolve(`file://${sanitizedPath}/${mediaId}`);
                         return;
                     }).catch((err) => {
                         reject(`getLink error: ${err}`);
@@ -41,7 +43,7 @@ module.exports = class MediaCache {
                     });
                 }
 
-                resolve(`file://${this.mediaCachePath}/${mediaId}`);
+                resolve(`file://${sanitizedPath}/${mediaId}`);
             });
         });
     }
