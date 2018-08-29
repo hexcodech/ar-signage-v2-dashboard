@@ -12,6 +12,7 @@ import { MediaCacheService } from '../services/media-cache.service';
 })
 export class ClientComponent implements OnInit {
   public selectedRoom: string;
+  public originalClients: any;
   public clients: any = {};
   public mediaCacheUrl: string;
   public Date = Date;
@@ -31,6 +32,7 @@ export class ClientComponent implements OnInit {
       this.changeRef.detectChanges();
     });
     this.clientsService.getClients().then(clients => {
+      this.originalClients = clients;
       for (const clientUID of Object.keys(clients)) {
         if (!this.clients[clients[clientUID].roomname]) {
           this.clients[clients[clientUID].roomname] = [];
@@ -49,15 +51,7 @@ export class ClientComponent implements OnInit {
         }
       }
 
-      // Remove clients not anymore existing
-      for (const roomKey of Object.keys(this.clients)) {
-        for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
-          if (!(clients[this.clients[roomKey][clientIndex].uid]
-            && clients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
-            this.clients[roomKey].splice(clientIndex, 1);
-          }
-        }
-      }
+      this.cleanUp();
     });
     this.roomsService.selectedRoomObservable.subscribe(room => this.selectedRoom = room);
   }
@@ -173,6 +167,7 @@ export class ClientComponent implements OnInit {
         this.clients[roomname].find(x => x.uid === uid).audio_background_control = messageObject.value;
         break;
     }
+    this.cleanUp();
   }
 
   public setText(textModal, uid) {
@@ -195,6 +190,32 @@ export class ClientComponent implements OnInit {
         content: null
       }
     }), {retain: true});
+  }
+
+  private cleanUp() {
+    if (!this.originalClients) {
+      this.clientsService.getClients().then(clients => {
+        this.originalClients = clients;
+
+        for (const roomKey of Object.keys(this.clients)) {
+          for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
+            if (!(this.originalClients[this.clients[roomKey][clientIndex].uid]
+              && this.originalClients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
+              this.clients[roomKey].splice(clientIndex, 1);
+            }
+          }
+        }
+      });
+    } else {
+      for (const roomKey of Object.keys(this.clients)) {
+        for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
+          if (!(this.originalClients[this.clients[roomKey][clientIndex].uid]
+            && this.originalClients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
+            this.clients[roomKey].splice(clientIndex, 1);
+          }
+        }
+      }
+    }
   }
 
 }

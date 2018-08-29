@@ -38,7 +38,7 @@
         {{client?.clientname}}
         <fa-icon
           [class.text-success]="Date.now() - client?.alive < 3000"
-          [class.text-danger]="Date.now() - client?.alive >= 3000"
+          [class.text-danger]="!client?.alive || Date.now() - client?.alive >= 3000"
           [icon]="Date.now() - client?.alive < 3000 ? 'check-circle' : 'times-circle'">
         </fa-icon>
       </h6>

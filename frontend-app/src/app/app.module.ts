@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxElectronModule } from 'ngx-electron';
 import { FormsModule } from '@angular/forms';
@@ -39,9 +38,6 @@ library.add(faPlay, faPause, faStop, faCheckCircle, faTimesCircle, faVolumeUp);
     FormsModule,
     FontAwesomeModule,
     NgbModule.forRoot(),
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent }
-    ]),
   ],
   providers: [
     MqttService,
