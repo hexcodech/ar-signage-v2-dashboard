@@ -30,8 +30,15 @@ export class NavbarComponent implements OnInit {
     this.roomsService.getRooms().then(rooms => {
       this.rooms = rooms;
       if (rooms.length > 0) {
-        this.selectedRoom = rooms[0];
-        this.roomsService.selectedRoomObservable.next(rooms[0]);
+        const localStorageRoom = JSON.parse(window.localStorage.getItem('selectedRoom'));
+        if (localStorageRoom) {
+          this.selectedRoom = localStorageRoom;
+        } else {
+          this.selectedRoom = rooms[0];
+        }
+
+        this.roomsService.selectedRoomObservable.next(this.selectedRoom);
+        window.localStorage.setItem('selectedRoom', JSON.stringify(this.selectedRoom));
         this.makeTimeString();
       }
     });
@@ -39,6 +46,7 @@ export class NavbarComponent implements OnInit {
 
   public setRoom(room) {
     this.selectedRoom = room;
+    window.localStorage.setItem('selectedRoom', JSON.stringify(room));
     this.roomsService.selectedRoomObservable.next(room);
     this.makeTimeString();
   }
