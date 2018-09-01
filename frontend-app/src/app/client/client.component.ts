@@ -14,6 +14,7 @@ export class ClientComponent implements OnInit {
   public selectedRoom: string;
   public clientsJSON: any;
   public clients: any = {};
+  public clientsLoading = true;
   public mediaCacheUrl: string;
   public Date = Date;
 
@@ -33,6 +34,7 @@ export class ClientComponent implements OnInit {
     });
 
     this.clientsService.getClients().then(clients => {
+      this.clientsLoading = false;
       this.clientsJSON = clients;
 
       for (const clientUID of Object.keys(clients)) {

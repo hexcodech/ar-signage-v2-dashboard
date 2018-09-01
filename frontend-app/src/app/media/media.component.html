@@ -1,6 +1,9 @@
 <div class="row">
   <div class="col">
     <h4>Media</h4>
+    <ngb-progressbar *ngIf="clientsLoading || mediaListLoading" value="100" [striped]="true" [animated]="true" type="info">
+        Loading Clients from Backend
+    </ngb-progressbar>
   </div>
 </div>
 <div class="row">

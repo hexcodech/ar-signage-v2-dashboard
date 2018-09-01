@@ -7,6 +7,8 @@ import { MqttService } from './services/mqtt.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  mqttConnecting = true;
+
   constructor(private mqttService: MqttService) {
     this.mqttService.mqttModuleObservable.subscribe(ip => {
       console.log(`Client connected to mqtt ${ip}`);
@@ -27,6 +29,7 @@ export class AppComponent {
           role: 'dashboard'
         }
       }));
+      this.mqttConnecting = false;
     });
   }
 }

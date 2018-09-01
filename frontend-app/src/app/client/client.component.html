@@ -1,4 +1,7 @@
 <h4>Clients</h4>
+<ngb-progressbar *ngIf="clientsLoading" value="100" [striped]="true" [animated]="true" type="info">
+    Loading Clients and MediaList from Backend
+</ngb-progressbar>
 
 <div 
   class="card mb-2 p-2" 

@@ -12,7 +12,9 @@ import { ClientsService } from '../services/clients.service';
 export class MediaComponent implements OnInit {
   public selectedRoom: string;
   public mediaList: any = {};
+  public mediaListLoading = true;
   public clients: any = {};
+  public clientsLoading = true;
   public mediaCacheUrl: string;
 
   constructor(
@@ -30,6 +32,7 @@ export class MediaComponent implements OnInit {
     });
     this.roomsService.selectedRoomObservable.subscribe(room => this.selectedRoom = room);
     this.mediaListService.getMediaList().then(mediaList => {
+      this.mediaListLoading = false;
       for (const mediaTopDir of mediaList) {
         if (mediaTopDir.children) {
           this.mediaList[mediaTopDir.name] = mediaTopDir.children;
@@ -39,6 +42,7 @@ export class MediaComponent implements OnInit {
       }
     });
     this.clientsService.getClients().then(clients => {
+      this.clientsLoading = false;
       for (const clientUID of Object.keys(clients)) {
         if (!this.clients[clients[clientUID].roomname]) {
           this.clients[clients[clientUID].roomname] = [];
