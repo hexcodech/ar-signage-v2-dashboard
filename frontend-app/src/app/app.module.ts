@@ -5,7 +5,7 @@ import { NgxElectronModule } from 'ngx-electron';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { NgbModule, NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbDropdown, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -46,6 +46,7 @@ library.add(faPlay, faPause, faStop, faCheckCircle, faTimesCircle, faVolumeUp);
     MediaListService,
     MediaCacheService,
     NgbDropdown,
+    NgbAccordion
   ],
   bootstrap: [AppComponent]
 })
