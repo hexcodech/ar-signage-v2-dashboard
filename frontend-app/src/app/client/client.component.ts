@@ -12,7 +12,7 @@ import { MediaCacheService } from '../services/media-cache.service';
 })
 export class ClientComponent implements OnInit {
   public selectedRoom: string;
-  public originalClients: any;
+  public clientsJSON: any;
   public clients: any = {};
   public mediaCacheUrl: string;
   public Date = Date;
@@ -31,8 +31,10 @@ export class ClientComponent implements OnInit {
       this.mqttMessageHandler(message.topic, message.message);
       this.changeRef.detectChanges();
     });
+
     this.clientsService.getClients().then(clients => {
-      this.originalClients = clients;
+      this.clientsJSON = clients;
+
       for (const clientUID of Object.keys(clients)) {
         if (!this.clients[clients[clientUID].roomname]) {
           this.clients[clients[clientUID].roomname] = [];
@@ -41,17 +43,13 @@ export class ClientComponent implements OnInit {
           this.clients[clients[clientUID].roomname].push({
             uid: clientUID,
             clientname: clients[clientUID].clientname,
-            media: null,
-            video_curenttime: null,
-            audio_background_control: null,
-            alive: null,
           });
         } else {
           this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID).clientname = clients[clientUID].clientname;
         }
       }
 
-      this.cleanUp();
+      this.cleanUpClients();
     });
     this.roomsService.selectedRoomObservable.subscribe(room => this.selectedRoom = room);
   }
@@ -95,6 +93,7 @@ export class ClientComponent implements OnInit {
             uid,
             alive: null,
           });
+          this.cleanUpClients();
         }
 
         this.clients[roomname].find(x => x.uid === uid).alive = messageObject.value;
@@ -114,6 +113,7 @@ export class ClientComponent implements OnInit {
             uid,
             media: null,
           });
+          this.cleanUpClients();
         }
 
         this.clients[roomname].find(x => x.uid === uid).media = messageObject.value;
@@ -140,6 +140,7 @@ export class ClientComponent implements OnInit {
             uid,
             video_curenttime: null,
           });
+          this.cleanUpClients();
         }
 
         this.clients[roomname].find(x => x.uid === uid).video_curenttime = messageObject.value;
@@ -162,12 +163,12 @@ export class ClientComponent implements OnInit {
             uid,
             audio_background_control: null,
           });
+          this.cleanUpClients();
         }
 
         this.clients[roomname].find(x => x.uid === uid).audio_background_control = messageObject.value;
         break;
     }
-    this.cleanUp();
   }
 
   public setText(textModal, uid) {
@@ -192,15 +193,15 @@ export class ClientComponent implements OnInit {
     }), {retain: true});
   }
 
-  private cleanUp() {
-    if (!this.originalClients) {
+  private cleanUpClients() {
+    if (!this.clientsJSON) {
       this.clientsService.getClients().then(clients => {
-        this.originalClients = clients;
+        this.clientsJSON = clients;
 
         for (const roomKey of Object.keys(this.clients)) {
           for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
-            if (!(this.originalClients[this.clients[roomKey][clientIndex].uid]
-              && this.originalClients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
+            if (!(this.clientsJSON[this.clients[roomKey][clientIndex].uid]
+              && this.clientsJSON[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
               this.clients[roomKey].splice(clientIndex, 1);
             }
           }
@@ -209,8 +210,8 @@ export class ClientComponent implements OnInit {
     } else {
       for (const roomKey of Object.keys(this.clients)) {
         for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
-          if (!(this.originalClients[this.clients[roomKey][clientIndex].uid]
-            && this.originalClients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
+          if (!(this.clientsJSON[this.clients[roomKey][clientIndex].uid]
+            && this.clientsJSON[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
             this.clients[roomKey].splice(clientIndex, 1);
           }
         }

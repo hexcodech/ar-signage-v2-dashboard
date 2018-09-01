@@ -28,7 +28,7 @@ module.exports = class MediaCache {
         });
     }
 
-    getLink(mediaId) {
+    getLinkCache(mediaId) {
         return new Promise((resolve, reject) => {
             fs.access(`${this.mediaCachePath}/${mediaId}`, (err) => {
                 const sanitizedPath = this.mediaCachePath.replace(/\\/g, '/');
@@ -45,6 +45,15 @@ module.exports = class MediaCache {
 
                 resolve(`file://${sanitizedPath}/${mediaId}`);
             });
+        });
+    }
+
+    getLink(mediaId) {
+        // Disabled local media cache
+        // return getLinkCache(mediaId);
+
+        return new Promise((resolve, reject) => {
+            resolve(`${this.mediaCacheDownloadUrl}/${mediaId}`);
         });
     }
 }

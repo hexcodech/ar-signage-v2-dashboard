@@ -47,25 +47,13 @@ export class MediaComponent implements OnInit {
           this.clients[clients[clientUID].roomname].push({
             uid: clientUID,
             clientname: clients[clientUID].clientname,
-            mediaid: null,
-            audio_background_mediaid: null,
-            audio_background_control: null,
-            audio_background_volume: null,
           });
         } else {
           this.clients[clients[clientUID].roomname].find(x => x.uid === clientUID).clientname = clients[clientUID].clientname;
         }
       }
 
-      // Remove clients not anymore existing
-      for (const roomKey of Object.keys(this.clients)) {
-        for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
-          if (!(clients[this.clients[roomKey][clientIndex].uid]
-            && clients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
-            this.clients[roomKey].splice(clientIndex, 1);
-          }
-        }
-      }
+      this.cleanUpClients(clients);
     });
   }
 
@@ -119,6 +107,7 @@ export class MediaComponent implements OnInit {
     this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background/control`, JSON.stringify({
       value: action,
     }), {retain: true});
+    
     if (action === 'RESET') {
       this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background`, JSON.stringify({
         value: null,
@@ -205,18 +194,16 @@ export class MediaComponent implements OnInit {
     }
   }
 
-  filterMediaList(selectedRoom) {
-    const copyMediaList = this.mediaList;
-
-    console.dir(copyMediaList[selectedRoom]);
-    for (const mediaRoomIndex of Object.keys(this.mediaList)) {
-      for (let mediaClientIndex = 0; mediaClientIndex < this.mediaList[mediaRoomIndex].length; mediaClientIndex++) {
-        if (!this.getClientByClientname(this.mediaList[mediaRoomIndex][mediaClientIndex].name)) {
-          copyMediaList[mediaRoomIndex].splice(mediaClientIndex, 1);
-        }
-      }
-    }
-    return copyMediaList[selectedRoom];
+  private cleanUpClients(clients) {
+          // Remove clients not anymore existing
+          for (const roomKey of Object.keys(this.clients)) {
+            for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
+              if (!(clients[this.clients[roomKey][clientIndex].uid]
+                && clients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
+                this.clients[roomKey].splice(clientIndex, 1);
+              }
+            }
+          }
   }
 
 }

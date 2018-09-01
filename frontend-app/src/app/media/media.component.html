@@ -37,7 +37,7 @@
                 (click)="backgroundAudioControl('RESET', client.name)" 
                 type="button" 
                 class="btn btn-sm" 
-                [class.btn-danger]="getClientByClientname(client.name)?.audio_background_control === 'RESET'"
+                [class.btn-danger]="getClientByClientname(client.name)?.audio_background_control === 'RESET' || !getClientByClientname(client.name)?.audio_background_control"
               >
                 <fa-icon icon="stop"></fa-icon>
               </button>
