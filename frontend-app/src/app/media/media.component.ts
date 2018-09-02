@@ -58,6 +58,7 @@ export class MediaComponent implements OnInit {
       }
 
       this.cleanUpClients(clients);
+      this.sortMediaList();
     });
   }
 
@@ -199,15 +200,45 @@ export class MediaComponent implements OnInit {
   }
 
   private cleanUpClients(clients) {
-          // Remove clients not anymore existing
-          for (const roomKey of Object.keys(this.clients)) {
-            for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
-              if (!(clients[this.clients[roomKey][clientIndex].uid]
-                && clients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
-                this.clients[roomKey].splice(clientIndex, 1);
-              }
-            }
+    // Remove clients not anymore existing
+    for (const roomKey of Object.keys(this.clients)) {
+      for (let clientIndex = 0; clientIndex < this.clients[roomKey].length; clientIndex++) {
+        if (!(clients[this.clients[roomKey][clientIndex].uid]
+          && clients[this.clients[roomKey][clientIndex].uid]['roomname'] === roomKey)) {
+          this.clients[roomKey].splice(clientIndex, 1);
+        }
+      }
+    }
+  }
+
+  private sortMediaList() {
+    for (const roomKey of Object.keys(this.mediaList)) {
+      this.mediaList[roomKey].sort((a, b) => {
+        if (!a.name || !b.name) {
+          return 0;
+        }
+        const x = a.name.toLowerCase();
+        const y = b.name.toLowerCase();
+
+        if (x < y) { return -1; }
+        if (x > y) { return 1; }
+        return 0;
+      });
+
+      for (const client of this.mediaList[roomKey]) {
+        client.children.sort((a, b) => {
+          if (!a.name || !b.name) {
+            return 0;
           }
+          const x = a.name.toLowerCase();
+          const y = b.name.toLowerCase();
+
+          if (x < y) { return -1; }
+          if (x > y) { return 1; }
+          return 0;
+        });
+      }
+    }
   }
 
 }

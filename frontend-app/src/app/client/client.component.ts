@@ -219,6 +219,24 @@ export class ClientComponent implements OnInit {
         }
       }
     }
+
+    this.sortClients();
+  }
+
+  private sortClients() {
+    for (const roomKey of Object.keys(this.clients)) {
+      this.clients[roomKey].sort((a, b) => {
+        if (!a.clientname || !b.clientname) {
+          return 0;
+        }
+        const x = a.clientname.toLowerCase();
+        const y = b.clientname.toLowerCase();
+
+        if (x < y) { return -1; }
+        if (x > y) { return 1; }
+        return 0;
+      });
+    }
   }
 
 }
