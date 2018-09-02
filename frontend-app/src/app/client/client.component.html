@@ -10,7 +10,8 @@
   [class.border-default]="client?.media?.type === 'timer'"
   [class.border-success]="client?.media?.type === 'image' || client?.media?.type === 'video'"
   dndDropzone
-  (dndDrop)="onMediaDrop($event, client.uid)">
+  (dndDrop)="onMediaDrop($event, client.uid)"
+  dndDragoverClass="dragover">
   <div class="row">
     <div class="col-3">
       <div class="card sq media">
@@ -22,7 +23,6 @@
         >
         <video [id]="'video'+client?.uid"
           *ngIf="client?.media?.type === 'video' && client?.media?.videoUrl"
-          autoplay
           muted
           [src]="client?.media?.videoUrl"
           style="border-radius: 0.25rem; width: 100%; height: 100%;"

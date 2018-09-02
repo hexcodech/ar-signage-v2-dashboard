@@ -54,6 +54,11 @@ export class ClientComponent implements OnInit {
       this.cleanUpClients();
     });
     this.roomsService.selectedRoomObservable.subscribe(room => this.selectedRoom = room);
+
+    // Alive GUI update interval
+    setInterval(() => {
+      this.changeRef.detectChanges();
+    }, 3000);
   }
 
   private mqttMessageHandler(topic, message) {
@@ -148,6 +153,9 @@ export class ClientComponent implements OnInit {
         this.clients[roomname].find(x => x.uid === uid).video_curenttime = messageObject.value;
         if (document.getElementById('video' + uid) && messageObject.value.current > 0) {
           document.getElementById('video' + uid)['currentTime'] = messageObject.value.current;
+        }
+        if (document.getElementById('video' + uid) && document.getElementById('video' + uid)['paused']) {
+          document.getElementById('video' + uid)['play']();
         }
         break;
       case topic.match(/^ar-signage\/.+\/.+\/audio\/background\/control$/g) &&
