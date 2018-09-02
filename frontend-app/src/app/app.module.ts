@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { NgbModule, NgbDropdown, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
+import { DndModule } from 'ngx-drag-drop';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -38,6 +39,7 @@ library.add(faPlay, faPause, faStop, faCheckCircle, faTimesCircle, faVolumeUp);
     FormsModule,
     FontAwesomeModule,
     NgbModule.forRoot(),
+    DndModule
   ],
   providers: [
     MqttService,

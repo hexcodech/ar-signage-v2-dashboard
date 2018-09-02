@@ -170,7 +170,95 @@ export class ClientComponent implements OnInit {
 
         this.clients[roomname].find(x => x.uid === uid).audio_background_control = messageObject.value;
         break;
+      case topic.match(/^ar-signage\/.+\/.+\/audio\/background$/g) && topic.match(/^ar-signage\/.+\/.+\/audio\/background$/g).length > 0:
+        roomname = topic.split(/[\/\/]/g)[1];
+        uid = topic.split(/[\/\/]/g)[2];
+        if (!roomname || !uid) {
+          return;
+        }
+        if (!this.clients[roomname]) {
+          this.clients[roomname] = [];
+        }
+        if (!this.clients[roomname].find(x => x.uid === uid)) {
+          this.clients[roomname].push({
+            uid,
+            audio_background_mediaid: null,
+          });
+          this.cleanUpClients();
+        }
+
+        this.clients[roomname].find(x => x.uid === uid).audio_background_mediaid = messageObject.value;
+        break;
     }
+  }
+
+  playMedia(folderName: string, clientName: string, fileName: string, clientUID: string) {
+    const mediaId = `${this.selectedRoom}/${clientName}/${folderName}/${fileName}`;
+    switch (folderName) {
+      case 'videos':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${clientUID}/media`, JSON.stringify({
+          value: {
+            type: 'video',
+            content: mediaId,
+          }
+        }), {retain: true});
+        break;
+      case 'images':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${clientUID}/media`, JSON.stringify({
+          value: {
+            type: 'image',
+            content: mediaId,
+          }
+        }), {retain: true});
+        break;
+      case 'audio_oneshot':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${clientUID}/audio/oneshot`, JSON.stringify({
+          value: mediaId,
+        }));
+        break;
+      case 'audio_background':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${clientUID}/audio/background`, JSON.stringify({
+          value: mediaId,
+        }), {retain: true});
+        this.mqttService.mqttModule.mqttClient.publish(
+          `ar-signage/${this.selectedRoom}/${clientUID}/audio/background/control`, JSON.stringify({
+          value: 'START',
+        }), {retain: true});
+        break;
+    }
+  }
+
+  backgroundAudioControl(action: string, client: any) {
+    if (!client.audio_background_mediaid) {
+      this.mqttService.mqttModule.mqttClient.publish(
+        `ar-signage/${this.selectedRoom}/${client.uid}/audio/background/control`, JSON.stringify({
+        value: 'RESET',
+      }), {retain: true});
+      return;
+    }
+
+    this.mqttService.mqttModule.mqttClient.publish(
+      `ar-signage/${this.selectedRoom}/${client.uid}/audio/background/control`, JSON.stringify({
+      value: action,
+    }), {retain: true});
+
+    if (action === 'RESET') {
+      this.mqttService.mqttModule.mqttClient.publish(
+        `ar-signage/${this.selectedRoom}/${client.uid}/audio/background`, JSON.stringify({
+        value: null,
+      }), {retain: true});
+    }
+  }
+
+  getClientByClientname(clientName: string) {
+    if (!this.clients || !this.clients[this.selectedRoom]) {
+      return null;
+    }
+    return this.clients[this.selectedRoom].find(x => x.clientname === clientName);
+  }
+
+  public onMediaDrop(media, clientUID) {
+    this.playMedia(media.data.mediaTypeName, media.data.clientName, media.data.mediaName, clientUID);
   }
 
   public setText(textModal, uid) {
