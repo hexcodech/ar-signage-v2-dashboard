@@ -1,3 +1,8 @@
 /deep/ ngb-accordion .card-header {
     padding: 0.2rem 1.25rem;
 }
+
+/deep/ ngb-accordion .card {
+    margin-bottom: 1rem;
+    border-radius: 0.25rem !important;
+}

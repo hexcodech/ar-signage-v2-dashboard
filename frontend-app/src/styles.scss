@@ -1,4 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+$container-max-widths: (
+  sm: 95%,
+  md: 95%,
+  lg: 95%,
+  xl: 95%
+);
 @import '~bootstrap/scss/bootstrap';
 
 .media {
