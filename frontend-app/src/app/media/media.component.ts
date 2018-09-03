@@ -176,6 +176,10 @@ export class MediaComponent implements OnInit {
   }
 
   private sortMediaList() {
+    if (!this.mediaList) {
+      return;
+    }
+
     for (const roomKey of Object.keys(this.mediaList)) {
       this.mediaList[roomKey].sort((a, b) => {
         if (!a.name || !b.name) {
@@ -190,6 +194,10 @@ export class MediaComponent implements OnInit {
       });
 
       for (const client of this.mediaList[roomKey]) {
+        if (!client.children) {
+          continue;
+        }
+
         client.children.sort((a, b) => {
           if (!a.name || !b.name) {
             return 0;
