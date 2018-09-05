@@ -40,6 +40,7 @@ export class MediaComponent implements OnInit {
           this.mediaList[mediaTopDir.name] = [];
         }
       }
+      this.sortMediaList();
     });
     this.clientsService.getClients().then(clients => {
       this.clientsLoading = false;

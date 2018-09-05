@@ -3,91 +3,93 @@
     Loading Clients and MediaList from Backend
 </ngb-progressbar>
 
-<div 
-  class="card mb-2 p-2" 
-  *ngFor="let client of clients[selectedRoom]"
-  [class.border-primary]="client?.media?.type === 'text'"
-  [class.border-default]="client?.media?.type === 'timer'"
-  [class.border-success]="client?.media?.type === 'image' || client?.media?.type === 'video'"
-  dndDropzone
-  (dndDrop)="onMediaDrop($event, client.uid)"
-  dndDragoverClass="dragover">
-  <div class="row">
-    <div class="col-3">
-      <div class="card sq media">
-        <img 
-          class="d-flex"
-          *ngIf="client?.media?.type === 'image'"
-          [src]="mediaCacheUrl+'/'+client?.media?.content"
-          style="border-radius: 0.25rem; width: 100%; height: 100%;"
-        >
-        <video [id]="'video'+client?.uid"
-          *ngIf="client?.media?.type === 'video' && client?.media?.videoUrl"
-          muted
-          [src]="client?.media?.videoUrl"
-          style="border-radius: 0.25rem; width: 100%; height: 100%;"
-        >
-        </video>
-        <span 
-          *ngIf="client?.media?.type === 'text'"
-          style="height: 100%; width: 100%; text-align: center; line-height: 5.25rem;"
-        >Text</span>
-        <span 
-          *ngIf="client?.media?.type === 'timer'"
-          style="height: 100%; width: 100%; text-align: center; line-height: 5.25rem;"
-        >Timer</span>
+<div style="overflow-y: auto; overflow-x: hidden; height: calc(100vh - 150px);">
+  <div 
+    class="card mb-2 p-2"
+    *ngFor="let client of clients[selectedRoom]"
+    [class.border-primary]="client?.media?.type === 'text'"
+    [class.border-default]="client?.media?.type === 'timer'"
+    [class.border-success]="client?.media?.type === 'image' || client?.media?.type === 'video'"
+    dndDropzone
+    (dndDrop)="onMediaDrop($event, client.uid)"
+    dndDragoverClass="dragover">
+    <div class="row">
+      <div class="col-3">
+        <div class="card sq media">
+          <img 
+            class="d-flex"
+            *ngIf="client?.media?.type === 'image'"
+            [src]="mediaCacheUrl+'/'+client?.media?.content"
+            style="border-radius: 0.25rem; width: 100%; height: 100%;"
+          >
+          <video [id]="'video'+client?.uid"
+            *ngIf="client?.media?.type === 'video' && client?.media?.videoUrl"
+            muted
+            [src]="client?.media?.videoUrl"
+            style="border-radius: 0.25rem; width: 100%; height: 100%;"
+          >
+          </video>
+          <span 
+            *ngIf="client?.media?.type === 'text'"
+            style="height: 100%; width: 100%; text-align: center; line-height: 5.25rem;"
+          >Text</span>
+          <span 
+            *ngIf="client?.media?.type === 'timer'"
+            style="height: 100%; width: 100%; text-align: center; line-height: 5.25rem;"
+          >Timer</span>
+        </div>
       </div>
-    </div>
-    <div class="col">
-      <h6>
-        {{client?.clientname}}
-        <fa-icon
-          [class.text-success]="Date.now() - client?.alive < 3000"
-          [class.text-danger]="!client?.alive || Date.now() - client?.alive >= 3000"
-          [icon]="Date.now() - client?.alive < 3000 ? 'check-circle' : 'times-circle'">
-        </fa-icon>
-      </h6>
-      <h6 class="text-muted">
-        {{client?.media?.type && client?.media?.type.charAt(0).toUpperCase() + client?.media?.type.slice(1)}}
-        <span *ngIf="client?.media?.type === 'text'"> - {{(client?.media?.content.length>20)? (client?.media?.content | slice:0:20)+'...':(client?.media?.content)}}</span>
-        <span *ngIf="client?.media?.type === 'image' || client?.media?.type === 'video'"> - {{client?.media?.content.split('/')[client?.media?.content.split('/').length-1].split('.')[0]}}</span>
-      </h6>
-      <h6 class="text-muted">
-        <fa-icon *ngIf="client?.audio_background_control === 'START'" icon="volume-up"></fa-icon>
-        <span *ngIf="client?.audio_background_mediaid"> {{client?.audio_background_mediaid?.split('/')[client?.audio_background_mediaid?.split('/').length-1]}}</span>  
-      </h6>
-      <p *ngIf="client?.media?.type === 'video'"><ngb-progressbar type="info" [value]="client.video_curenttime?.current / (client.video_curenttime?.total / 100)">{{client.video_curenttime?.current | number:'1.0-0'}}/{{client.video_curenttime?.total | number:'1.0-0'}}</ngb-progressbar></p>
-      <div class="btn-toolbar btn-group-sm">
-        <button type="button" class="btn btn-primary mr-1" (click)="setText(textModal, client.uid)">Text</button>
-        <button type="button" class="btn btn-secondary mr-1" (click)="setTimer(client.uid)">Timer</button>
-      </div>
-      <div *ngIf="client?.audio_background_mediaid" class="btn-toolbar btn-group-sm" style="margin-top: 5px;">
-        <button
-          (click)="backgroundAudioControl('START', client)"
-          type="button"
-          class="btn btn-sm"
-          [class.btn-success]="client.audio_background_control === 'START'"
-          [disabled]="!client.audio_background_mediaid"
-        >
-          <fa-icon icon="play"></fa-icon>
-        </button>
-        <button
-          (click)="backgroundAudioControl('PAUSE', client)" 
-          type="button" 
-          class="btn btn-sm" 
-          [class.btn-warning]="client.audio_background_control === 'PAUSE'"
-          [disabled]="!client.audio_background_mediaid"
-        >
-          <fa-icon icon="pause"></fa-icon>
-        </button>
-        <button
-          (click)="backgroundAudioControl('RESET', client)" 
-          type="button" 
-          class="btn btn-sm" 
-          [class.btn-danger]="client.audio_background_control === 'RESET' || !client.audio_background_control"
-        >
-          <fa-icon icon="stop"></fa-icon>
-        </button>
+      <div class="col">
+        <h6>
+          {{client?.clientname}}
+          <fa-icon
+            [class.text-success]="Date.now() - client?.alive < 3000"
+            [class.text-danger]="!client?.alive || Date.now() - client?.alive >= 3000"
+            [icon]="Date.now() - client?.alive < 3000 ? 'check-circle' : 'times-circle'">
+          </fa-icon>
+        </h6>
+        <h6 class="text-muted">
+          {{client?.media?.type && client?.media?.type.charAt(0).toUpperCase() + client?.media?.type.slice(1)}}
+          <span *ngIf="client?.media?.type === 'text'"> - {{(client?.media?.content.length>20)? (client?.media?.content | slice:0:20)+'...':(client?.media?.content)}}</span>
+          <span *ngIf="client?.media?.type === 'image' || client?.media?.type === 'video'"> - {{client?.media?.content.split('/')[client?.media?.content.split('/').length-1].split('.')[0]}}</span>
+        </h6>
+        <h6 class="text-muted">
+          <fa-icon *ngIf="client?.audio_background_control === 'START'" icon="volume-up"></fa-icon>
+          <span *ngIf="client?.audio_background_mediaid"> {{client?.audio_background_mediaid?.split('/')[client?.audio_background_mediaid?.split('/').length-1]}}</span>  
+        </h6>
+        <p *ngIf="client?.media?.type === 'video'"><ngb-progressbar type="info" [value]="client.video_curenttime?.current / (client.video_curenttime?.total / 100)">{{client.video_curenttime?.current | number:'1.0-0'}}/{{client.video_curenttime?.total | number:'1.0-0'}}</ngb-progressbar></p>
+        <div class="btn-toolbar btn-group-sm">
+          <button type="button" class="btn btn-primary mr-1" (click)="setText(textModal, client.uid)">Text</button>
+          <button type="button" class="btn btn-secondary mr-1" (click)="setTimer(client.uid)">Timer</button>
+        </div>
+        <div *ngIf="client?.audio_background_mediaid" class="btn-toolbar btn-group-sm" style="margin-top: 5px;">
+          <button
+            (click)="backgroundAudioControl('START', client)"
+            type="button"
+            class="btn btn-sm"
+            [class.btn-success]="client.audio_background_control === 'START'"
+            [disabled]="!client.audio_background_mediaid"
+          >
+            <fa-icon icon="play"></fa-icon>
+          </button>
+          <button
+            (click)="backgroundAudioControl('PAUSE', client)" 
+            type="button" 
+            class="btn btn-sm" 
+            [class.btn-warning]="client.audio_background_control === 'PAUSE'"
+            [disabled]="!client.audio_background_mediaid"
+          >
+            <fa-icon icon="pause"></fa-icon>
+          </button>
+          <button
+            (click)="backgroundAudioControl('RESET', client)" 
+            type="button" 
+            class="btn btn-sm" 
+            [class.btn-danger]="client.audio_background_control === 'RESET' || !client.audio_background_control"
+          >
+            <fa-icon icon="stop"></fa-icon>
+          </button>
+        </div>
       </div>
     </div>
   </div>

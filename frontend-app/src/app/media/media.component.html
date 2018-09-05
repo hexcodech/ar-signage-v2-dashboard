@@ -6,7 +6,7 @@
     </ngb-progressbar>
   </div>
 </div>
-<div class="row">
+<div class="row" style="overflow-y: auto; height: calc(100vh - 150px);">
   <div class="col">
     <div *ngFor="let client of mediaList[selectedRoom]">
       <ngb-accordion *ngIf="getClientByClientname(client.name)" #acc="ngbAccordion" activeIds="mediaListActivePanelsIDs">
