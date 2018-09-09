@@ -25,6 +25,7 @@
                   placement="bottom" 
                   [ngbTooltip]="media?.name"
                   [dndDraggable]="{mediaTypeName: mediaType.name, clientName: client.name, mediaName: media.name}"
+                  (click)="playMedia(mediaType.name, client.name, media.name)"
                 >
                   <img 
                     class="d-flex"

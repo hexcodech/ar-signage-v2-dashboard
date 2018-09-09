@@ -93,6 +93,43 @@ export class MediaComponent implements OnInit {
     return this.clients[this.selectedRoom].find(x => x.clientname === clientName);
   }
 
+  playMedia(folderName: string, clientName: string, fileName: string) {
+    const uid = this.getClientByClientname(clientName).uid;
+    const mediaId = `${this.selectedRoom}/${clientName}/${folderName}/${fileName}`;
+    switch (folderName) {
+      case 'videos':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/media`, JSON.stringify({
+          value: {
+            type: 'video',
+            content: mediaId,
+          }
+        }), {retain: true});
+        break;
+      case 'images':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/media`, JSON.stringify({
+          value: {
+            type: 'image',
+            content: mediaId,
+          }
+        }), {retain: true});
+        break;
+      case 'audio_oneshot':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/oneshot`, JSON.stringify({
+          value: mediaId,
+        }));
+        break;
+      case 'audio_background':
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background`, JSON.stringify({
+          value: mediaId,
+        }), {retain: true});
+        this.mqttService.mqttModule.mqttClient.publish(`ar-signage/${this.selectedRoom}/${uid}/audio/background/control`, JSON.stringify({
+          value: 'START',
+        }), {retain: true});
+        break;
+    }
+  }
+
+
   private mqttMessageHandler(topic, message) {
     let messageObject;
     let roomname, uid;
